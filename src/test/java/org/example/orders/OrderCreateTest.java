@@ -5,13 +5,31 @@ import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-import java.util.Arrays;
+import java.util.List;
 
+@RunWith(Parameterized.class)
 public class OrderCreateTest {
     private OrderSteps orderSteps;
     private OrderCreate orderCreate;
     private OrderResult orderResult;
+    private List<String> color;
+
+    public OrderCreateTest(List<String> color) {
+        this.color = color;
+    }
+
+    @Parameterized.Parameters (name = "Color Scooter - {0}")
+    public static Object[][] dataGen() {
+        return new Object[][] {
+                {List.of("BLACK", "GREY")},
+                {List.of("BLACK")},
+                {List.of("GREY")},
+                {List.of()}
+        };
+    }
 
     @Before
     public void setUp() {
@@ -21,37 +39,12 @@ public class OrderCreateTest {
 
     @Test
     @DisplayName("Создание заказа с самокатами разных цветов")
-    @Description("Цвет самоката - BLACK, GREY")
-    public void orderCreateColorBlackAndGrey(){
-        orderCreate = new OrderCreate((Arrays.asList("BLACK", "GREY")));
-        ValidatableResponse validatableResponse = orderSteps.orderCreate(orderCreate);
-        orderResult.orderResultCreate(validatableResponse);
-    }
-
-    @Test
-    @DisplayName("Создание заказа с самокатами разных цветов")
-    @Description("Цвет самоката - BLACK")
-    public void orderCreateColorBlack(){
-        orderCreate = new OrderCreate((Arrays.asList("BLACK")));
-        ValidatableResponse validatableResponse = orderSteps.orderCreate(orderCreate);
-        orderResult.orderResultCreate(validatableResponse);
-    }
-
-    @Test
-    @DisplayName("Создание заказа с самокатами разных цветов")
-    @Description("Цвет самоката - GREY")
-    public void orderCreateColorGrey(){
-        orderCreate = new OrderCreate((Arrays.asList("GREY")));
-        ValidatableResponse validatableResponse = orderSteps.orderCreate(orderCreate);
-        orderResult.orderResultCreate(validatableResponse);
-    }
-
-    @Test
-    @DisplayName("Создание заказа с самокатами разных цветов")
-    @Description("Цвет самоката - не указан")
-    public void orderCreateNoColor(){
-        orderCreate = new OrderCreate((Arrays.asList()));
+    @Description("Цвет самоката")
+    public void orderCreateColorWithParam() {
+        orderCreate = new OrderCreate(color);
         ValidatableResponse validatableResponse = orderSteps.orderCreate(orderCreate);
         orderResult.orderResultCreate(validatableResponse);
     }
 }
+
+
